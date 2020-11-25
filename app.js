@@ -51,7 +51,7 @@ function addTransactionDOM(transaction) {
   itemLI.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
 
   itemLI.innerHTML = `
-    ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span> <button class="btn-delete">x</button>
+    ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span> <button class="btn-delete" onclick="removeTransactionDOM(${transaction.id})">x</button>
   `;
 
   listElement.appendChild(itemLI);
@@ -84,6 +84,12 @@ function updateValues() {
 
 }
 
+// Remove transaction by ID
+function removeTransactionDOM(id) {
+  transactions = transactions.filter(transaction => transaction.id !== id);
+
+  init();
+}
 
 // Init app
 function init() {
