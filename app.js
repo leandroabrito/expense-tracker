@@ -4,7 +4,8 @@ const moneyMinusElement = document.getElementById('money-minus');
 const listElement = document.getElementById('list');
 const formElement = document.getElementById('form');
 const textElement = document.getElementById('text');
-const amountElement = document.getElementById('btn');
+const amountElement = document.getElementById('amount');
+const btnSubmit = document.getElementById('btn');
 
 const dummyTransactions = [
   { id: 1, text: 'Flower', amount: -20 },
@@ -14,6 +15,30 @@ const dummyTransactions = [
 ];
 
 let transactions = dummyTransactions;
+
+// Add transaction
+function addTransaction(e) {
+  e.preventDefault();
+  if (textElement.value.trim() === '' || amountElement.value.trim() === '') {
+    alert('Please add a text and amount');
+  } else {
+    const transaction = {
+      id: generateID(),
+      text: textElement.value,
+      amount: +amountElement.value
+    };
+  transactions.push(transaction);
+  addTransactionDOM(transaction);
+  updateValues();
+  textElement.value = '';
+  amountElement.value = '';
+  }
+}
+
+// Generate random ID
+function generateID() {
+  return Math.floor(Math.random() * 10000000);
+}
 
 // add transactions to DOM list
 function addTransactionDOM(transaction) {
@@ -36,7 +61,11 @@ function addTransactionDOM(transaction) {
 function updateValues() {
   const amounts = transactions.map(transaction => transaction.amount);
 
+  console.log(amounts);
+
   const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed();
+
+  console.log(total);
 
   const income = amounts
     .filter(item => item > 0)
@@ -53,7 +82,6 @@ function updateValues() {
   moneyPlusElement.innerText = `R$ ${income}`;
   moneyMinusElement.innerText = `R$ ${expense}`;
 
-  console.log(expense);
 }
 
 
@@ -65,3 +93,5 @@ function init() {
 }
 
 init();
+
+formElement.addEventListener('submit', addTransaction);
