@@ -7,14 +7,16 @@ const textElement = document.getElementById('text');
 const amountElement = document.getElementById('amount');
 const btnSubmit = document.getElementById('btn');
 
-const dummyTransactions = [
-  { id: 1, text: 'Flower', amount: -20 },
-  { id: 2, text: 'Salary', amount: 300 },
-  { id: 3, text: 'Book', amount: -10 },
-  { id: 4, text: 'Camera', amount: 150 },
-];
+// const dummyTransactions = [
+//   { id: 1, text: 'Flower', amount: -20 },
+//   { id: 2, text: 'Salary', amount: 300 },
+//   { id: 3, text: 'Book', amount: -10 },
+//   { id: 4, text: 'Camera', amount: 150 },
+// ];
 
-let transactions = dummyTransactions;
+const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
+
+let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 
 // Add transaction
 function addTransaction(e) {
@@ -30,6 +32,7 @@ function addTransaction(e) {
   transactions.push(transaction);
   addTransactionDOM(transaction);
   updateValues();
+  updateLocalStorage();
   textElement.value = '';
   amountElement.value = '';
   }
@@ -51,7 +54,7 @@ function addTransactionDOM(transaction) {
   itemLI.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
 
   itemLI.innerHTML = `
-    ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span> <button class="btn-delete" onclick="removeTransactionDOM(${transaction.id})">x</button>
+    ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span> <button class="btn-delete" onclick="removeTransaction(${transaction.id})">x</button>
   `;
 
   listElement.appendChild(itemLI);
@@ -85,10 +88,17 @@ function updateValues() {
 }
 
 // Remove transaction by ID
-function removeTransactionDOM(id) {
+function removeTransaction(id) {
   transactions = transactions.filter(transaction => transaction.id !== id);
 
+  updateLocalStorage();
+
   init();
+}
+
+// Update local storage transactions
+function updateLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
 // Init app
